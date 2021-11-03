@@ -2,7 +2,7 @@
   "name": "anz-wholesale",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://github.com/srajimd/anz-wholesale",
+  "homepage": "https://srajimd.github.io/anz-wholesale/",
   "dependencies": {
     "@testing-library/jest-dom": "^5.15.0",
     "@testing-library/react": "^11.2.7",
