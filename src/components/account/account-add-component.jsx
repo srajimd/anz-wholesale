@@ -1,4 +1,5 @@
 import React from 'react';
+import {withRouter} from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
@@ -30,6 +31,18 @@ class AccountAdd extends React.Component {
             return false;
         }
     }
+    handleSubmit = async e => {
+        e.preventDefault();
+
+        /*let params =  {
+            "accountname": this.state.accountname, 
+            "accounttype": this.state.accounttype
+        };*/
+        //return <Redirect to='/anz-wholesale/account' />
+        this.props.history.push('/anz-wholesale/account');   
+
+    }
+
     render() {
         return (
             <div className="account-add-form">
@@ -47,7 +60,7 @@ class AccountAdd extends React.Component {
                             </select>
                         </div>
                         <div className="col-md-4">
-                            <button className="btn btn-primary"><FontAwesomeIcon icon={faPlus} /> Add New Account</button>
+                            <button className="btn btn-primary" onClick={this.handleSubmit}><FontAwesomeIcon icon={faPlus} /> Add New Account</button>
                         </div>
                     </div>
                 </form>
@@ -56,4 +69,4 @@ class AccountAdd extends React.Component {
     }
 }
 
-export default AccountAdd;
+export default withRouter(AccountAdd);

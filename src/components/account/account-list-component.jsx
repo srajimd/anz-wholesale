@@ -15,66 +15,63 @@ class AccountList extends React.Component {
             accountdata: [],
             transactiondata: [],
             isOpen: false,
-            fullscreen: true
+            fullscreen: true,
+            thisacctname:null,
+            error:null
         }
-        this.state.accountdata = [
-            {
-                "id": 1,
-                "name": "ANZ1234",
-                "accounttype": "Savings"
-            },
-            {
-                "id": 2,
-                "name": "ANZ84343",
-                "accounttype": "Credit Card"
-            }
-        ];
-        this.state.transactiondata = [
-            {
-
-                "date": "11-06-2021",
-                "desc": "Flipkart Apparel Shopping",
-                "debit": "$12",
-                "credit": "-",
-                "balance": "$100",
-                "status": "Success"
-            },
-            {
-                "date": "11-06-2021",
-                "desc": "Kannan Grocery Purchase",
-                "debit": "$15",
-                "credit": "-",
-                "balance": "$85",
-                "status": "Success"
-            },
-            {
-                "date": "10-05-2021",
-                "desc": "Fund Transfer",
-                "debit": "-",
-                "credit": "$10",
-                "balance": "$95",
-                "status": "Success"
-            },
-            {
-                "date": "11-04-2021",
-                "desc": "Fund Transfer",
-                "debit": "-",
-                "credit": "$10",
-                "balance": "$95",
-                "status": "Pending"
-            },
-            {
-                "date": "11-02-2021",
-                "desc": "Flipkart Apparel Shopping",
-                "debit": "$10",
-                "credit": "-",
-                "balance": "$95",
-                "status": "Failed"
-            }
-        ];
     }
-    openModal = () => this.setState({ isOpen: true });
+    openModal = (acctid, acctname) => {
+        this.getTransactions(acctid);
+        this.setState({ isOpen: true, thisacctname: acctname })
+    }
+
     closeModal = () => this.setState({ isOpen: false });
+
+    async componentDidMount(){
+        await fetch('https://g9v1e.mocklab.io/accounts',{
+            method: 'POST',
+            headers:{
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+            }
+        })
+        .then(response => response.json())
+        .then(response => {
+            this.setState({accountdata: response});
+            if(!this.state.accountdata.length){
+                throw new Error('Something went wrong ...');  
+            }
+
+        })
+        .catch(error => this.setState({error}));
+        //console.log(error.message)
+    }
+
+    async getTransactions(aid){        
+        let params =  {
+            "id": aid
+        };
+        //console.log(params);
+        await fetch('https://g9v1e.mocklab.io/transactions',{
+            method: 'POST',
+            headers:{
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+            },
+            body: JSON.stringify(params)
+        })
+        .then(response => response.json())
+        .then(response => {
+            //console.log(response);
+            this.setState({transactiondata: response});
+            if(!this.state.transactiondata.length){
+                throw new Error('Something went wrong ...');  
+            }
+
+        })
+        .catch(error => this.setState({error}));
+        //console.log(this.state.error)
+    } 
 
     render() {
 
@@ -97,7 +94,7 @@ class AccountList extends React.Component {
                                     <td>{v.id}</td>
                                     <td>{v.name}</td>
                                     <td>{v.accounttype}</td>
-                                    <td className="text-center"><FontAwesomeIcon icon={faExchangeAlt} onClick={this.openModal} /></td>
+                                    <td className="text-center"><FontAwesomeIcon icon={faExchangeAlt} onClick={() => this.openModal(v.id, v.name)}  /></td>
                                 </tr>
                             ))
                         }
@@ -111,7 +108,7 @@ class AccountList extends React.Component {
                 >
                     <Modal.Header closeButton>
                         <Modal.Title id="transactionlist">
-                            Transaction
+                            Transaction of {this.state.thisacctname}
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>

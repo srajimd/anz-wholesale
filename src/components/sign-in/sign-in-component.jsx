@@ -63,7 +63,7 @@ class SignIn extends React.Component{
                     { this.state.error && <div className="error"> { this.state.error.message } </div> }  
                     <input type="text" placeholder="email" name="email" value={this.state.email} onChange={this.handleChange} required />
                     <input type="password" placeholder="password" name="password" value={this.state.password} onChange={this.handleChange} required />
-                    <button onClick={this.handleSubmit}>Sign In</button>
+                    <button className="btn btn-success" onClick={this.handleSubmit}>Sign In</button>
                 </form>
             </div>
         );
