@@ -146,7 +146,7 @@ class AccountList extends React.Component {
                         </Table>
                     </Modal.Body>
                 </Modal>
-            </div >
+            </div>
         )
     }
 }

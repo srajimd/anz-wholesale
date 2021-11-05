@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -10,10 +10,12 @@ import AccountPage from './pages/account/account-page';
 
 function App() {
   return (
+    <BrowserRouter>
     <Switch>
       <Route exact path='/anz-wholesale/' component={SignInPage} />
       <Route exact path='/anz-wholesale/account' component={AccountPage} />
     </Switch>
+    </BrowserRouter>
   );
 }
 
