@@ -3,7 +3,7 @@ import {Redirect} from 'react-router-dom';
 import './account-page.scss';
 
 import Header from '../../components/header/header-component';
-import Account from '../../components/account/account-component';
+import AccountList from '../../components/account/account-list-component';
 import Footer from '../../components/footer/footer-component';
 
 const AccountPage = () => {
@@ -13,8 +13,12 @@ const AccountPage = () => {
     return (        
         <div>
             <Header />
-            <h1>Accounts</h1>
-            <Account />
+            <div className="maincontent">
+                <div className="fs-3 page-title">Accounts</div>
+                <div className="container">                
+                    <AccountList />
+                </div>   
+            </div>        
             <Footer />
         </div>       
     );

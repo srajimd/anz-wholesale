@@ -1,0 +1,23 @@
+.header{
+    padding:15px;
+    height:20vh;
+    padding-left:6.5rem;
+    padding-right:6.5rem;
+    border-bottom:1px solid #f3dede9a;
+    a{
+        color:#FFFFFF;
+        text-decoration: none;
+    }
+    a:hover{
+        color:#FFFFFF;
+    }
+    svg{
+        color:#df07079a;
+    }
+    .logotxt{
+        color:rgb(3, 3, 12);
+    }
+    .welcometxt{
+        line-height: 50px;
+    }
+}
