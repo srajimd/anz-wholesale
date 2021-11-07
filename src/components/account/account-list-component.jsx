@@ -4,6 +4,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons';
 import { Modal } from 'react-bootstrap';
 
+import { connect } from 'react-redux';
+import { addAccountItem } from '../../redux/account/account-action';
+
 import './account-component.scss';
 
 import AccountAdd from '../../components/account/account-add-component';
@@ -13,11 +16,12 @@ class AccountList extends React.Component {
         super();
         this.state = {
             accountdata: [],
+            accountItems: [],
             transactiondata: [],
             isOpen: false,
             fullscreen: true,
-            thisacctname:null,
-            error:null
+            thisacctname: null,
+            error: null
         }
     }
     openModal = (acctid, acctname) => {
@@ -27,51 +31,66 @@ class AccountList extends React.Component {
 
     closeModal = () => this.setState({ isOpen: false });
 
-    async componentDidMount(){
-        await fetch('https://g9v1e.mocklab.io/accounts',{
+    async componentDidMount() {
+        this.setState({ accountItems: [] })
+        await fetch('https://g9v1e.mocklab.io/accounts', {
             method: 'POST',
-            headers:{
+            headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json",
             }
         })
-        .then(response => response.json())
-        .then(response => {
-            this.setState({accountdata: response});
-            if(!this.state.accountdata.length){
-                throw new Error('Something went wrong ...');  
-            }
+            .then(response => response.json())
+            .then(response => {
+                this.setState({ accountdata: response });
+                this.state.accountdata.map((v, i) => (
+                    this.props.addAccountItem(v)
+                ));
 
-        })
-        .catch(error => this.setState({error}));
+                //console.log(this.props.accountItems);
+
+                if (!this.state.accountdata.length) {
+                    throw new Error('Something went wrong ...');
+                }
+
+            })
+            .catch(error => this.setState({ error }));
         //console.log(error.message)
     }
 
-    async getTransactions(aid){        
-        let params =  {
+    async getTransactions(aid) {
+        this.setState({
+            transactiondata: []
+        });
+        let params = {
             "id": aid
         };
+        if (aid > 2) {
+            params = {
+                "new": 1
+            };
+        }
         //console.log(params);
-        await fetch('https://g9v1e.mocklab.io/transactions',{
+        await fetch('https://g9v1e.mocklab.io/transactions', {
             method: 'POST',
-            headers:{
+            headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json",
             },
             body: JSON.stringify(params)
         })
-        .then(response => response.json())
-        .then(response => {
-            //console.log(response);
-            this.setState({transactiondata: response});
-            if(!this.state.transactiondata.length){
-                throw new Error('Something went wrong ...');  
-            }
+            .then(response => response.json())
+            .then(response => {
+                //console.log(response);
+                this.setState({ transactiondata: response });
+                if (!this.state.transactiondata.length) {
+                    throw new Error('Something went wrong ...');
+                }
 
-        })
-        .catch(error => this.setState({error}));
-        //console.log(this.state.error)
-    } 
+            })
+            .catch(error => this.setState({ error }));
+            //console.log(this.state.error)
+    }
 
     render() {
 
@@ -88,16 +107,27 @@ class AccountList extends React.Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {
-                            this.state.accountdata.map((v, i) => (
-                                <tr key={i}>
-                                    <td>{v.id}</td>
-                                    <td>{v.name}</td>
-                                    <td>{v.accounttype}</td>
-                                    <td className="text-center"><FontAwesomeIcon icon={faExchangeAlt} onClick={() => this.openModal(v.id, v.name)}  /></td>
-                                </tr>
-                            ))
-                        }
+                        {(() => {
+                            if (this.props.accountItems.length > 0) {
+                                return (
+                                    this.props.accountItems.map((v, i) => (
+                                        <tr key={i}>
+                                            <td>{v.id}</td>
+                                            <td>{v.name}</td>
+                                            <td>{v.accounttype}</td>
+                                            <td className="text-center"><FontAwesomeIcon icon={faExchangeAlt} onClick={() => this.openModal(v.id, v.name)} /></td>
+                                        </tr>
+                                    ))
+                                )
+                            } else {
+                                return (
+                                    <tr>
+                                        <td colSpan="4">No account found</td>
+                                    </tr>
+                                )
+                            }
+
+                        })()}
                     </tbody>
                 </Table>
 
@@ -125,20 +155,29 @@ class AccountList extends React.Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {
-
-                                    this.state.transactiondata.map((v1, i1) => (
-                                        <tr key={i1}>
-                                            <td>{i1 + 1}</td>
-                                            <td>{v1.date}</td>
-                                            <td>{v1.desc}</td>
-                                            <td>{v1.debit}</td>
-                                            <td>{v1.credit}</td>
-                                            <td>{v1.balance}</td>
-                                            <td>{v1.status}</td>
-                                        </tr>
-                                    ))
-                                }
+                                {(() => {
+                                    if (this.state.transactiondata.length > 0) {
+                                        return (
+                                            this.state.transactiondata.map((v1, i1) => (
+                                                <tr key={i1}>
+                                                    <td>{i1 + 1}</td>
+                                                    <td>{v1.date}</td>
+                                                    <td>{v1.desc}</td>
+                                                    <td>{v1.debit}</td>
+                                                    <td>{v1.credit}</td>
+                                                    <td>{v1.balance}</td>
+                                                    <td>{v1.status}</td>
+                                                </tr>
+                                            ))
+                                        )
+                                    } else {
+                                        return (
+                                            <tr>
+                                                <td colSpan="7">No transaction found</td>
+                                            </tr>
+                                        )
+                                    }
+                                })()}
                             </tbody>
                         </Table>
                     </Modal.Body>
@@ -148,4 +187,12 @@ class AccountList extends React.Component {
     }
 }
 
-export default AccountList;
+const mapStateToProps = ({ account: { accountItems } }) => ({
+    accountItems
+});
+
+const mapDispatchToProps = dispatch => ({
+    addAccountItem: aItem => dispatch(addAccountItem(aItem))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(AccountList);

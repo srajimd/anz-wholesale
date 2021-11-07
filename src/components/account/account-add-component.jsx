@@ -3,6 +3,10 @@ import {withRouter} from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
+
+import { connect } from 'react-redux';
+import { addAccountItem } from '../../redux/account/account-action';
+
 import './account-component.scss';
 
 class AccountAdd extends React.Component {
@@ -34,13 +38,27 @@ class AccountAdd extends React.Component {
     handleSubmit = async e => {
         e.preventDefault();
 
-        /*let params =  {
-            "accountname": this.state.accountname, 
-            "accounttype": this.state.accounttype
-        };*/
-        //return <Redirect to='/anz-wholesale/account' />
-        this.props.history.push('/anz-wholesale/account');   
+        if(this.state.accountname!=='' && this.state.accounttype!==''){       
+      
+            let params =  { 
+                "id": (this.props.accountItems.length+1),           
+                "name": this.state.accountname, 
+                "accounttype": this.state.accounttype
+            };
 
+            //console.log(params);
+
+            this.props.addAccountItem(params);
+           
+            this.setState({
+                accountname:'',
+                accounttype:''
+            })
+
+            //return <Redirect to='/anz-wholesale/account' />
+            this.props.history.push('/anz-wholesale/account');
+        }
+        return false;
     }
 
     render() {
@@ -52,7 +70,7 @@ class AccountAdd extends React.Component {
                             <input type="text" className="form-control" name="accountname" placeholder="Name" label="Name" value={this.state.accountname} onChange={this.onChangeAlphaNumericInput} required />
                         </div>
                         <div className="col-md-4">
-                            <select name="accounttype" className="form-select" onChange={this.handleChange} required>
+                            <select name="accounttype" id="accounttype" className="form-select" onChange={this.handleChange} value={this.state.accounttype} required>
                                 <option value="">-- Select Account Type</option>
                                 <option value="savings">Saving Account</option>
                                 <option value="creditcard">Credit Card</option>
@@ -68,5 +86,15 @@ class AccountAdd extends React.Component {
         );
     }
 }
+const mapStateToProps = ({ account: {accountItems} }) => ({
+    accountItems
+});
 
-export default withRouter(AccountAdd);
+const mapDispatchToProps = dispatch => ({
+    addAccountItem: aItem => dispatch(addAccountItem(aItem))
+});
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(AccountAdd));
+
+//export default withRouter(AccountAdd);
