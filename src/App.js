@@ -1,9 +1,9 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
+/*import { connect } from 'react-redux';
 
 import { setCurrentUser } from './redux/user/user-actions';
-import { addAccountItem } from './redux/account/account-action';
+import { addAccountItem } from './redux/account/account-action';*/
 
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -17,15 +17,17 @@ import AccountPage from './pages/account/account-page';
 class App extends React.Component {
   render() {
     return (
-      <Switch>
-        <Route exact path='/anz-wholesale/' component={SignInPage} />
-        <Route exact path='/anz-wholesale/account' component={AccountPage} />
-      </Switch>
+      <BrowserRouter>
+        <Switch>
+          <Route exact path='/anz-wholesale/' component={SignInPage} />
+          <Route exact path='/anz-wholesale/account' component={AccountPage} />
+        </Switch>
+      </BrowserRouter>
     );
   }
 }
 
-const mapStateToProps = ({ user, account }) => ({
+/*const mapStateToProps = ({ user, account }) => ({
   currentUser: user.currentUser,
   accountItems: []
 });
@@ -35,4 +37,6 @@ const mapDispatchToProps = dispatch => ({
   addAccountItem: accountItems => dispatch(addAccountItem(accountItems))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);*/
+
+export default App;
